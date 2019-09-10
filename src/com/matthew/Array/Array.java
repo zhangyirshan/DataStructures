@@ -74,17 +74,25 @@ public class Array<E> {
      * @param e 新元素
      */
     public void add(int index,E e) throws IllegalAccessException {
-        if (size == data.length) {
-            throw new IllegalAccessException("Add Last failed。Array is full");
-        }
         if (index < 0 || index > size) {
             throw new IllegalAccessException("Add Last failed。Require index >= 0 and index <= size.");
+        }
+        if (size == data.length) {
+            resize(2 * data.length);
         }
         for (int i = size - 1; i >= index; i--) {
             data[i + 1] = data[i];
         }
         data[index] = e;
         size++;
+    }
+
+    private void resize(int newCapacity) {
+        E[] newData = (E[])new Object[newCapacity];
+        for (int i = 0; i < size; i++) {
+            newData[i] = data[i];
+        }
+        data = newData;
     }
 
     /**
@@ -154,6 +162,9 @@ public class Array<E> {
         }
         size--;
         data[size] = null; // loitering objects != memory leak
+        if (size <= data.length / 4 && data.length != 0) {
+            resize(data.length / 2);
+        }
         return ret;
     }
 
