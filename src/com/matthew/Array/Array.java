@@ -107,6 +107,13 @@ public class Array<E> {
         return data[index];
     }
 
+    public E getLast() throws IllegalAccessException {
+        return get(size - 1);
+    }
+    public E getFirst() throws IllegalAccessException {
+        return get(0);
+    }
+
     /**
      *  修改index索引位置的元素为e
      * @param index 索引
@@ -183,7 +190,7 @@ public class Array<E> {
      * @throws IllegalAccessException
      */
     public E removeLast() throws IllegalAccessException {
-        return remove(size);
+        return remove(size - 1);
     }
 
     /**
