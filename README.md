@@ -19,3 +19,20 @@ undo操作-编辑器
 ## 队列
 
 ### 循环队列
+
+##链表
+
+## 递归
+- 注意递归函数的“宏观”语义
+- 递归函数就是一个函数，完成一个功能
+```java
+public class Sum {
+    //计算arr【l...n)这个区间内所有数字的和
+    public static int sum(int arr[], int l) {
+        if (l == arr.length) {                  //求解最基本问题
+            return 0;
+        }
+        return arr[l] + sum(arr, l + 1);        //把原问题转化成更小的问题
+    }
+}
+```
