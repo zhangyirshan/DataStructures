@@ -10,5 +10,8 @@ package com.matthew.Trie;
 public class Main {
     public static void main(String[] args) {
 
+        Trie trie = new Trie();
+        trie.add("hello word");
+        System.out.println(trie.contains("hello word"));
     }
 }
