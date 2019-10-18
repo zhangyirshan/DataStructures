@@ -11,6 +11,9 @@ import java.util.ArrayList;
 
 public class AVLTree<K extends Comparable<K>, V> {
 
+
+
+
     private class Node {
         public K key;
         public V value;
@@ -142,7 +145,7 @@ public class AVLTree<K extends Comparable<K>, V> {
             node.left = leftRotate(node.left);
             return rightRotate(node);
         }
-            //RL
+        //RL
         if (balanceFactor < 1 && getBalanceFactor(node.right) > 0) {
             //右子树右旋为RR
             node.right = rightRotate(node.right);
@@ -193,5 +196,126 @@ public class AVLTree<K extends Comparable<K>, V> {
         return x;
     }
 
+    public V remove(K key) {
+        return remove(root, key).value;
+    }
 
+    private Node remove(Node node, K key) {
+        if (node == null) {
+            return null;
+        }
+
+        Node retNode;
+        if (key.compareTo(node.key) < 0) {
+            node.left = remove(node.left, key);
+            retNode = node;
+        } else if (key.compareTo(node.key) > 0) {
+            node.right = remove(node.right, key);
+            retNode = node;
+        } else {    //key.compareTo(node.key) == 0
+            //待删除节点左子树为空的情况
+            if (node.left == null) {
+                Node rightNode = node.right;
+                node.right = null;
+                size--;
+                retNode =  rightNode;
+            } else if (node.right == null) {//待删除节点右子树为空的情况
+                Node leftNode = node.left;
+                node.left = null;
+                size--;
+                retNode = leftNode;
+            }
+            //待删除节点左右子树均不为空的情况
+            //找到比待删除节点大的最小节点，即待删除节点右子树的最小节点
+            //用这个节点顶替待删除节点的位置
+            else {
+                Node successor = minimum(node.right);
+                successor.right = remove(node.right, successor.key);
+                successor.left = node.left;
+                node.left = node.right = null;
+                retNode = successor;
+            }
+        }
+        //如果删除的是叶子节点，不需要平衡，直接返回看父节点
+        if (retNode == null) {
+            return null;
+        }
+
+        //更新height
+        retNode.height = 1 + Math.max(getHeight(retNode.left), getHeight(retNode.right));
+
+        //计算平衡因子
+        int balanceFactor = getBalanceFactor(retNode);
+        if (Math.abs(balanceFactor) > 1) {
+            System.out.println("unbalanced : " +balanceFactor);
+        }
+        //平衡维护
+        //LL
+        if (balanceFactor > 1 && getBalanceFactor(retNode.left) >= 0) {
+            return rightRotate(retNode);
+        }
+        //RR
+        if (balanceFactor < 1 && getBalanceFactor(retNode.right) <= 0) {
+            return leftRotate(retNode);
+        }
+        //LR
+        if (balanceFactor > 1 && getBalanceFactor(retNode.left) < 0) {
+            //左子树左旋为LL
+            node.left = leftRotate(retNode.left);
+            return rightRotate(retNode);
+        }
+        //RL
+        if (balanceFactor < 1 && getBalanceFactor(retNode.right) > 0) {
+            //右子树右旋为RR
+            node.right = rightRotate(retNode.right);
+            return leftRotate(retNode);
+        }
+        return retNode;
+    }
+
+    private Node minimum(Node node) {
+        if (node.left == null) {
+            return node;
+        }
+        return minimum(node.left);
+    }
+
+    public V get(K key) {
+        return get(root,key).value;
+    }
+
+    private Node get(Node node, K key) {
+        if (node == null) {
+            return null;
+        }
+        if (key.compareTo(node.key) < 0) {
+            return get(node.left,key);
+        } else if (key.compareTo(node.key) > 0) {
+            return get(node.right, key);
+        } else {
+            return node;
+        }
+    }
+
+    public void set(K key, V newValue) {
+        Node node = get(root, key);
+        node.value = newValue;
+    }
+
+    public boolean contains(K e) {
+        return contains(root, e);
+    }
+
+    private boolean contains(Node node, K key) {
+        if (node == null) {
+            return false;
+        }
+        if (key.compareTo(node.key) < 0) {
+            return contains(node.left,key);
+        } else if (key.compareTo(node.key) > 0) {
+            return contains(node.right, key);
+        } else {
+            return true;
+        }
+    }
 }
